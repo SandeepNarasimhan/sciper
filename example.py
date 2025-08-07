@@ -2,6 +2,7 @@ from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from performance.metrics import evaluate_model, plot_model
+from interpretability.interpret import explain_model
 
 # Load sample data
 X, y = load_iris(return_X_y=True)
@@ -16,4 +17,4 @@ clf.fit(X_train, y_train)
 evaluate_model(clf, X_test, y_test)
 plot_model(clf, X_test, y_test)
 
-explain_model()
+explain_model(clf, X_train, X_test)
