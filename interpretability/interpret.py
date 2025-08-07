@@ -3,7 +3,6 @@ import lime.lime_tabular
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.base import BaseEstimator
 from abc import ABC, abstractmethod
 
 
@@ -12,7 +11,6 @@ def is_classifier(model):
     return (
         hasattr(model, "predict_proba")
         or (hasattr(model, "predict") and hasattr(model, "classes_"))
-        or (isinstance(model, BaseEstimator) and hasattr(model, '_estimator_type') and model._estimator_type == 'classifier')
     )
 
 
@@ -20,7 +18,6 @@ def is_regressor(model):
     """Check if model is a regressor."""
     return (
         (hasattr(model, "predict") and not hasattr(model, "classes_"))
-        or (isinstance(model, BaseEstimator) and hasattr(model, '_estimator_type') and model._estimator_type == 'regressor')
     )
 
 class Explainer(ABC):
@@ -67,14 +64,6 @@ def explain_model(model, X_train, X_test, index=0):
         except Exception as e:
             print(f"❌ Feature importances plotting failed: {e}")
 
-    # Use the Explainer interface for SHAP and LIME
-    shap_explainer = SHAPExplainer()
-    shap_explainer.explain(model, X_train, X_test)
-
-    lime_explainer = LIMEExplainer()
-    lime_explainer.explain(model, X_train, X_test, index)
-
-    # SHAP
     print("\n🧠 SHAP Summary Plot (Global Interpretation)")
     try:
         shap_explainer = shap.Explainer(model, X_train)
